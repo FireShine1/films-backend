@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Person } from './persons.model';
 import { CreatePersonsDto } from './dto/create-persons.dto';
@@ -108,9 +108,8 @@ export class PersonsService {
     }
 
     async getPersonById(id: number, lang: string) {
-        //const lang = 'ru';
 
-        const actor = await this.personsRepository.findByPk(id, {
+        const person = await this.personsRepository.findByPk(id, {
             include: [
                 {
                     model: PersonLang,
@@ -119,12 +118,17 @@ export class PersonsService {
             ]
         });
 
+        if (!person) {
+            throw new NotFoundException(`Film with id ${id} not found`);
+        }
+
+
         try {
             const filmsId = await this.getFilmsIdsByPerson(id);
 
             const filmsData = await firstValueFrom(this.client.send("films-request", { filmsId, lang }));
 
-            actor.dataValues.films = filmsData.map(film => {
+            person.dataValues.films = filmsData.map(film => {
                 return {
                     id: film.id,
                     name: film.filmLang[0].filmName,
@@ -134,13 +138,13 @@ export class PersonsService {
                 }
             });
 
-            return actor;
+            return person;
         } catch(err) {
             console.log(err);
 
-            actor.dataValues.films = 'Error: Cannot load films';
+            person.dataValues.films = 'Error: Cannot load films';
 
-            return actor;
+            return person;
         }
     }
 

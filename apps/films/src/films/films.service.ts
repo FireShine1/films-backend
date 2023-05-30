@@ -82,6 +82,10 @@ export class FilmsService {
             ]
         });
 
+        if (!film) {
+            throw new NotFoundException(`Film with id ${id} not found`);
+        }
+
         film.dataValues.similarFilms = await this.getSimilarFilms(film, lang);
 
         try {
@@ -104,13 +108,14 @@ export class FilmsService {
     }
 
     async getFilmsByFilters(countries, genres, lang: string) {
-        /*const genres = ["драма"];
-        const countries = ['США'];
-        const lang = 'ru';*/
         const filmsId = await this.filterIdByGenreAndCountry(genres, countries);
 
+        if (!filmsId || filmsId.length == 0) {
+            throw new NotFoundException(`There are no movies matching your search criteria.`);
+        }
+
         let films = await this.filmsRepository.findAll({
-            attributes: ['id', 'filmPoster', 'filmGrade', 'filmYear', 'filmTime', 'filmAge'],
+            attributes: ['id', 'filmPoster', 'filmGrade', 'filmTotalGrade', 'filmYear', 'filmTime', 'filmAge'],
             where: {
                 id: {
                     [Op.in]: [...filmsId]
@@ -194,7 +199,6 @@ export class FilmsService {
                 },
                 {
                     model: Country,
-                    //limit: 1,
                     where: { lang: lang },
                     attributes: ['id', 'name'],
                     through: { attributes: [] },
@@ -221,7 +225,6 @@ export class FilmsService {
                 },
                 {
                     model: Country,
-                    //limit: 1,
                     where: { lang: lang },
                     attributes: ['id', 'name'],
                     through: { attributes: [] },
@@ -248,7 +251,6 @@ export class FilmsService {
                 },
                 {
                     model: Country,
-                    //limit: 1,
                     where: { lang: lang },
                     attributes: ['id', 'name'],
                     through: { attributes: [] },
@@ -278,7 +280,6 @@ export class FilmsService {
                 },
                 {
                     model: Country,
-                    //limit: 1,
                     where: { lang: lang },
                     attributes: ['id', 'name'],
                     through: { attributes: [] },
@@ -359,6 +360,7 @@ export class FilmsService {
         if (!film) {
             throw new NotFoundException(`Genre with year ${filmYear} not found`);
         }
+
         return film;
     }
 
@@ -368,20 +370,21 @@ export class FilmsService {
             include: { all: true }
         });
         if (!film) {
-            throw new NotFoundException(`Genre with id ${filmId} not found`);
+            throw new NotFoundException(`Film with id ${filmId} not found`);
         }
         film.filmName = newFilmsName;
-        
         await film.save();
+
         return film;
     }
 
     async deleteFilm(id: number) {
         const film = await this.filmsRepository.findByPk(id);
         if (!film) {
-            throw new NotFoundException(`Genre with id ${id} not found`);
+            throw new NotFoundException(`Film with id ${id} not found`);
         }
         await film.destroy()
+
         return film;
     }
 
