@@ -4,9 +4,14 @@ import { CountriesFilms } from "./countries-films.model";
 import { ApiProperty } from "@nestjs/swagger";
 
 
+// interface CountryCreationAttrs {
+//     id: string;
+//     lang: string;
+//     name: string;
+// }
 
 @Table({tableName: 'countries', timestamps: false})
-export class Country extends Model<Country> {
+export class Country extends Model<Country > {
 
     @ApiProperty({example: '1', description: 'Уникальный индентификатор'})
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})

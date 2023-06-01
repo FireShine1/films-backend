@@ -7,6 +7,7 @@ import { Person } from './persons.model';
 import { PersonLang } from './persons-lang.model';
 import { FilmsActors } from './films-actors.model';
 import { DirectorsFilms } from './directors-films.model';
+import { SharedModule } from '@app/common';
 
 @Module({
     controllers: [PersonsController],
@@ -29,6 +30,7 @@ import { DirectorsFilms } from './directors-films.model';
                 },
             },
         }]),
+        SharedModule,
     ],
     exports: [PersonsService]
 })

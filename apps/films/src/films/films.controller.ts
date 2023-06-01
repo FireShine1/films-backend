@@ -15,7 +15,8 @@ export class FilmsController {
 
     @ApiOperation({summary: "Создание фильма"})
     @ApiResponse({status: 200, type: Film})
-    @UseGuards(AuthorOrAdminGuard)
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
     @Post('films')
     async create(@Body() dto: CreateFilmsDto) {
         return await this.filmsService.createFilms(dto); 

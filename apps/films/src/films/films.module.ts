@@ -11,6 +11,7 @@ import { Country } from '../countries/countries.model';
 import { CountriesFilms } from '../countries/countries-films.model';
 import { GenresModule } from '../genres/genres.module';
 import { CountriesModule } from '../countries/countries.module';
+import { SharedModule } from '@app/common';
 
 @Module({
     controllers: [FilmsController],
@@ -36,7 +37,8 @@ import { CountriesModule } from '../countries/countries.module';
             },
         }]),
         GenresModule,
-        CountriesModule
+        CountriesModule,
+        SharedModule,
     ],
     exports: [FilmsService]
 })

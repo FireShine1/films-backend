@@ -78,6 +78,7 @@ export class ProfilesController {
         @Body() profileDto: ProfileDto) {
         return this.profilesService.update(id, profileDto);
     }
+    // Дабавить операцию обновление nickName
 
     @ApiOperation({summary: "Удаление профиля"})
     @ApiResponse({status: 200, type: Profile})

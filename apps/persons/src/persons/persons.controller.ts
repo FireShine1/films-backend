@@ -5,6 +5,7 @@ import { MessagePattern } from "@nestjs/microservices";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Person } from "./persons.model";
 import { AuthorOrAdminGuard } from "apps/profile-service/src/profiles/guard/author-or-admin.guard";
+import { Roles, RolesGuard } from "@app/common";
 
 @ApiTags('countries')
 @Controller('persons')
@@ -13,7 +14,8 @@ export class PersonsController {
 
     @ApiOperation({summary: "Создание человека"})
     @ApiResponse({status: 200, type: Person})
-    @UseGuards(AuthorOrAdminGuard)
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreatePersonsDto) {
         return this.personsService.createPersons(dto); 

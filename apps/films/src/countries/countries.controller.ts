@@ -3,7 +3,7 @@ import { CountryService } from './countries.service';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Country } from './countries.model';
-import { AuthorOrAdminGuard } from 'apps/profile-service/src/profiles/guard/author-or-admin.guard';
+import { Roles, RolesGuard } from '@app/common';
 
 
 @ApiTags('countries')
@@ -13,7 +13,8 @@ export class CountryController {
 
     @ApiOperation({summary: "Создание страны"})
     @ApiResponse({status: 200, type: Country})
-    @UseGuards(AuthorOrAdminGuard)
+    // @Roles("ADMIN")
+    // @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreateCountryDto) {
         return this.countryService.createCountry(dto); 
