@@ -14,6 +14,7 @@ import { Country } from './countries.model';
 import { DirectorsFilms } from './directors-films.model';
 import { FilmsActors } from './films-actors.model';
 import { FilmLang } from './films-lang.model';
+import { Review } from './reviews.model';
 
 @Module({
     providers: [ConvertService],
@@ -31,7 +32,8 @@ import { FilmLang } from './films-lang.model';
             PersonMain,
             PersonLang,
             PersonOld,
-            FilmsActors
+            FilmsActors,
+            Review
         ]),
     ],
     exports: [

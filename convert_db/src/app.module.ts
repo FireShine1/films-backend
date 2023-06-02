@@ -14,6 +14,7 @@ import { PersonMain } from './convert/persons-main.model';
 import { PersonLang } from './convert/persons-lang.model';
 import { PersonOld } from './convert/persons-old.model';
 import { FilmsActors } from './convert/films-actors.model';
+import { Review } from './convert/reviews.model';
 
 @Module({
     imports: [
@@ -39,7 +40,8 @@ import { FilmsActors } from './convert/films-actors.model';
                 PersonMain,
                 PersonLang,
                 PersonOld,
-                FilmsActors
+                FilmsActors,
+                Review
             ],
             autoLoadModels: true
         }),

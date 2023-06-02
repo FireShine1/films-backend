@@ -20,6 +20,11 @@ export class ConvertController {
         this.appService.connectActorsToFilms();
     }
 
+    @Get('convert/enGenres')
+    addEnGenresAndCountries() {
+        this.appService.addEnGenresAndCountries();
+    }
+
     @Post('film')
     getOneFilm(@Body() body) {
         const name = body.name;
@@ -31,6 +36,17 @@ export class ConvertController {
     filterByGenres(@Body() body) {
         const genre = body.genre;
         return this.appService.filterByGenres(genre);
+    }
+
+    @Post('comment')
+    createComment(@Body() comment) {
+        this.appService.createReview(comment);
+    }
+
+    @Get('comment')
+    getComments() {
+        const id = 1;
+        return this.appService.getFilmReviews(id);
     }
 
 }

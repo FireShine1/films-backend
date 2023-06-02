@@ -4,7 +4,7 @@ import { FilmMain } from './films.model';
 import { FilmWithGenres } from './films-old.model';
 import { Genre } from './genres.model';
 import { GenresFilms } from './films-genres.model';
-import { Op, Sequelize } from 'sequelize';
+import { Op, Sequelize, where } from 'sequelize';
 import { FilmLang } from './films-lang.model';
 import { DirectorsFilms } from './directors-films.model';
 import { Country } from './countries.model';
@@ -13,6 +13,7 @@ import { PersonMain } from './persons-main.model';
 import { PersonLang } from './persons-lang.model';
 import { FilmsActors } from './films-actors.model';
 import { PersonOld } from './persons-old.model';
+import { Review } from './reviews.model';
 
 @Injectable()
 export class ConvertService {
@@ -30,6 +31,7 @@ export class ConvertService {
         @InjectModel(PersonMain) private personRepository: typeof PersonMain,
         @InjectModel(PersonLang) private personLangRepository: typeof PersonLang,
         @InjectModel(FilmsActors) private filmsActorsRepository: typeof FilmsActors,
+        @InjectModel(Review) private reviewsRepository: typeof Review,
         @InjectConnection() private sequelize: Sequelize) { }
 
 
@@ -71,6 +73,22 @@ export class ConvertService {
         }
     }
 
+    async addEnGenresAndCountries() {
+        let oldFilms = await this.filmWGenresRepository.findAll({ order: [['id', 'ASC']] });
+        for (let film of oldFilms) {
+            const genres = film.genre_list;
+            for (let genre of genres) {
+                const genreBd = await this.genreRepository.findOne({ where: { name: genre } });
+                await this.genresFilmsRepository.create({ genreId: genreBd.id + 24, filmId: film.id });
+            }
+            const countries = film.country_list;
+            for (let country of countries) {
+                const countryBd = await this.countryRepository.findOne({ where: { name: country } });
+                await this.countryFilmRepository.create({ countryId: countryBd.id + 39, filmId: film.id });
+            }
+        }
+    }
+
     async convertActorsDataBase() {
         let oldPersons = await this.personOldRepository.findAll({ order: [['id', 'ASC']] });
         for (let person of oldPersons) {
@@ -99,7 +117,7 @@ export class ConvertService {
     }
 
     async connectActorsToFilms() {
-        let oldFilms = await this.filmWGenresRepository.findAll({ limit: 72, order: [['id', 'ASC']] });
+        let oldFilms = await this.filmWGenresRepository.findAll({ order: [['id', 'ASC']] });
         for (let film of oldFilms) {
             const actors = film.actors_list;
             for (let actor of actors) {
@@ -269,6 +287,37 @@ export class ConvertService {
             group: ['FilmMain.id'],
         });
         return filmsId.map(item => item.id);
+    }
+
+    async createReview(comment) {
+        //const review = comment.review;
+        //const filmId = comment.filmId;
+        await this.reviewsRepository.create({...comment});
+    }
+
+    async getFilmReviews(id: number) {
+        let comments = await this.reviewsRepository.findAll({
+            where: {filmId: id},
+        });
+
+        for (let comment of comments) {
+            if (!comment.reviewId) {
+                comment.dataValues.childReviews = this.makeReviewHierarchy(comments, comment.id);
+            }
+        }
+
+        return comments.filter(comment => !comment.reviewId);
+    }
+
+    private makeReviewHierarchy(reviews: Review[], id: number) {
+        let result: Review[] = [];
+        for (let review of reviews) {
+            if (review.reviewId == id) {
+                review.dataValues.childReviews = this.makeReviewHierarchy(reviews, review.id);
+                result.push(review);
+            }
+        }
+        return result;
     }
 
 }
