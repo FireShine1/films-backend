@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { PersonsService } from "./persons.service";
 import { CreatePersonsDto } from "./dto/create-persons.dto";
 import { MessagePattern } from "@nestjs/microservices";
@@ -18,7 +18,7 @@ export class PersonsController {
     @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreatePersonsDto) {
-        return this.personsService.createPersons(dto); 
+        return this.personsService.createPerson(dto); 
     }
     
     @ApiOperation({summary: "Получения всех людей"})
@@ -32,24 +32,28 @@ export class PersonsController {
     @ApiResponse({status: 200, type: Person})
     @Get('/personName/:personName')
     async getPersonsByName(@Param('personName') personName: string) {
-        const film = await this.personsService.getPersonsByName(personName)
+        const film = await this.personsService.getPersonByName(personName)
         return film;
     }
 
     @ApiOperation({summary: "Получение человека по id"})
     @ApiResponse({status: 200, type: Person})
     @Get('/:id')
-    async getPersonById(@Param('id')  id: number) {
-        const lang = '??' //Пока хз, как именно мы будем получать этот параметр
+    async getPersonById(@Param('id')  id: number, @Query('lang') lang: string) {
         return this.personsService.getPersonById(id, lang);
     }
     
     @MessagePattern("persons-request")
-    getActors(request) {
+    getPersons(request) {
         const filmsId = request.filmsId;
         const poster = request.poster;
         const lang = request.lang;
         return this.personsService.getPersons(filmsId, poster, lang);
+    }
+
+    @MessagePattern("persons-data-request")
+    getPersonData(request) {
+        return this.personsService.getPersonsData();
     }
 
 }

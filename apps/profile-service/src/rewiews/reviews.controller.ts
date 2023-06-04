@@ -1,26 +1,36 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateReviewsDto } from './dto/create-main-page.dto';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewsService } from './reviews.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Reviews } from './reviews.model';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Review } from './reviews.model';
+import { Roles, RolesGuard } from '@app/common';
+import { MessagePattern } from '@nestjs/microservices';
 
-
-@Controller('reviews')
+@ApiTags('reviews')
+@Controller()
 export class ReviewsController {
     constructor(private reviewsService: ReviewsService) {}
 
-    @ApiOperation({summary: "Получение пользователя по типу фильма"})
-    @ApiResponse({status: 200, type: Reviews})
-    @Post()
-    create(@Body() dto: CreateReviewsDto) {
-        return this.reviewsService.createReviews(dto); 
+    @ApiOperation({summary: "Создание комментария"})
+    @ApiResponse({status: 201, type: Review})
+    @Roles("USER")
+    @UseGuards(RolesGuard)
+    @Post('film/:id/comment')
+    create(@Body() dto: CreateReviewDto, @Param('filmId') filmId: number) {
+        return this.reviewsService.createReview(dto, filmId);
     }
     
-    @ApiOperation({summary: "Получение пользователя по типу фильма"})
-    @ApiResponse({status: 200, type: Reviews})
+    @ApiOperation({summary: "Получение всех комментариев"})
+    @ApiResponse({status: 200, type: Review})
     @Get()
     getAll() {
         return this.reviewsService.getAll();
+    }
+
+    @MessagePattern('reviews-request')
+    getFilmsByPerson(request) {
+        const filmsId = request.filmsId;
+        return this.reviewsService.getReviewsByFilm(filmsId);
     }
 
 }

@@ -5,6 +5,7 @@ import { Profile } from './profiles.model';
 import { ProfileDto } from './dto/profile.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class ProfilesService {
@@ -23,7 +24,9 @@ export class ProfilesService {
         return {tokens, user};
     }
 
-    async register(userDto: UserDto) {
+    async register(registerDto: RegisterDto) {
+        const { userDto, profileDto } = registerDto;
+
         const data = await firstValueFrom(this.client.send("register", userDto));
         if (data.error) {
             throw new HttpException(data.error.message, data.error.status);
@@ -31,7 +34,7 @@ export class ProfilesService {
 
         const {tokens, user} = data;
 
-        const profile = await this.profileRepository.create({userId: user.id});
+        const profile = await this.profileRepository.create({userId: user.id, ...profileDto});
         return { tokens, profile, user };
 
     }

@@ -93,4 +93,6 @@ export class Film extends Model<Film> {
     //@ApiProperty({example: 'https://kinopoiskapiunofficial.tech/images/posters/kp/298.jpg', description: 'Ссылка на картинку фильма'})
     similarFilms;
 
+    reviews;
+
 }

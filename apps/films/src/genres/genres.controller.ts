@@ -7,7 +7,7 @@ import { AuthorOrAdminGuard } from 'apps/profile-service/src/profiles/guard/auth
 import { Roles, RolesGuard } from '@app/common';
 
 @ApiTags('genres')
-@Controller('genres')
+@Controller()
 export class GenresController {
     constructor(private genresService: GenresService) {}
 
@@ -22,14 +22,14 @@ export class GenresController {
     
     @ApiOperation({summary: "Получение всех жанров"})
     @ApiResponse({status: 200, type: Genre})
-    @Get()
+    @Get('/genres')
     async getAll() {
         return await this.genresService.getAll();
     }
 
     @ApiOperation({summary: "Получение жанра по id"})
     @ApiResponse({status: 200, type: Genre})
-    @Get('/:id')
+    @Get('genres/:id')
     async getGenreById(@Param('id') id: number) {
         const genre = await this.genresService.getGenreById(id);
         return genre;
@@ -39,7 +39,7 @@ export class GenresController {
     @ApiResponse({status: 200, type: Genre})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
-    @Put(':id/name')
+    @Put('admin/genres/:id')
     async updateGenreName(@Param('id') id: number, @Body('name') newName: string) {
         const genre = await this.genresService.updateGenreName(id, newName);
         return genre;
@@ -49,7 +49,7 @@ export class GenresController {
     @ApiResponse({status: 200, type: Genre})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
-    @Delete(':id')
+    @Delete('admin/genres/:id')
     async deleteFilm(@Param('id') id: number) {
        return await this.genresService.deleteGenre(id);
     }

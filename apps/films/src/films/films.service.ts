@@ -16,7 +16,11 @@ export class FilmsService {
     constructor(
         @InjectModel(Film) private filmsRepository: typeof Film,
         @InjectModel(FilmLang) private filmlangRepository: typeof FilmLang,
-        @Inject('films_service') private client: ClientProxy,) { }
+        @InjectModel(Genre) private genresRepository: typeof Genre,
+        @InjectModel(Country) private countriesRepository: typeof Country,
+        @Inject('films_service') private personsClient: ClientProxy,
+        @Inject('reviews_service') private reviewsClient: ClientProxy,
+    ) { }
 
     async createFilms(dto: CreateFilmsDto) {
         const films = await this.filmsRepository.create(dto);
@@ -44,20 +48,44 @@ export class FilmsService {
         return film;
     }
 
-    /*async getFilmsById(id: number) {
-        const film = await this.filmsRepository.findByPk(id);
-        if (!film) {
-            throw new Error('Films not found');
-        }
-        return film;
-    }*/
-
     async getFilmsSets(lang: string) {
         const bestFilmsSet = await this.getBestFilmsSet(lang);
         const bestFantasyFilmsSet = await this.getBestFantasyFilmsSet(lang);
         const familyFriendlyComediesSet = await this.getFamilyFriendlyComediesSet(lang);
 
-        return {bestFilmsSet, bestFantasyFilmsSet, familyFriendlyComediesSet};
+        return { bestFilmsSet, bestFantasyFilmsSet, familyFriendlyComediesSet };
+    }
+
+    async getStartData(lang: string) {
+        const bestFilmsSet = await this.getBestFilmsSet(lang);
+
+        const genres = await this.genresRepository.findAll();
+        const genresRu = genres.filter(genre => genre.lang == 'ru')
+            .map(genre => { return { id: genre.id, name: genre.name } });
+        const genresEn = genres.filter(genre => genre.lang == 'en')
+            .map(genre => { return { id: genre.id, name: genre.name } });
+
+        const countries = await this.countriesRepository.findAll();
+        const countriesRu = countries.filter(country => country.lang == 'ru')
+            .map(country => { return { id: country.id, name: country.name } });
+        const countriesEn = countries.filter(country => country.lang == 'en')
+            .map(country => { return { id: country.id, name: country.name } });
+
+        try {
+            const { popularActors, actors, directors } = await firstValueFrom(
+                this.personsClient.send("persons-data-request", 'all')
+            );
+
+            return {
+                bestFilmsSet, genresRu, genresEn, countriesRu, countriesEn,
+                popularActors, actors, directors
+            };
+        } catch (err) {
+            console.log(err);
+
+            return { bestFilmsSet, genresRu, genresEn, countriesRu, countriesEn };
+        }
+
     }
 
     async getFilmById(id: number, lang: string) {
@@ -90,24 +118,37 @@ export class FilmsService {
 
         try {
             const { actors, directors } = await firstValueFrom(
-                this.client.send("actors-request", { filmsId: [id], poster: true, lang })
+                this.personsClient.send("persons-request", { filmsId: [id], poster: true, lang })
             );
 
             film.dataValues.actors = this.mapActorsToFilm(film, actors);
             film.dataValues.directors = this.mapDirectorsToFilm(film, directors);
-
-            return film;
         } catch (err) {
             console.log(err);
 
             film.dataValues.actors = 'Error: Cannot load actors';
             film.dataValues.directors = 'Error: Cannot load directors';
-
-            return film;
         }
+
+        try {
+            const reviews = await firstValueFrom(
+                this.reviewsClient.send("reviews-request", { filmId: id})
+            );
+
+            film.dataValues.reviews = reviews;
+        } catch (err) {
+            console.log(err);
+
+            film.dataValues.reviews = 'Error: Cannot load reviews';
+        }
+
+        return film;
     }
 
-    async getFilmsByFilters(countries, genres, lang: string) {
+    async getFilmsByFilters(
+        countries, genres, actorsFilter: string[],
+        directorsFilter: string[], lang: string
+    ) {
         const filmsId = await this.filterIdByGenreAndCountry(genres, countries);
 
         if (!filmsId || filmsId.length == 0) {
@@ -143,13 +184,30 @@ export class FilmsService {
 
         try {
             const { actors, directors } = await firstValueFrom(
-                this.client.send("actors-request", { filmsId, poster: false, lang })
+                this.personsClient.send("persons-request", { filmsId, poster: false, lang })
             );
 
             films.forEach(film => {
                 film.dataValues.actors = this.mapActorsToFilm(film, actors);
                 film.dataValues.directors = this.mapDirectorsToFilm(film, directors);
             });
+
+            if (actorsFilter && actorsFilter.length > 0) {
+                films = films.filter(film =>
+                    film.dataValues.actors
+                        .filter(actor => actorsFilter.includes(actor.name))
+                        .length
+                );
+            }
+
+            if (directorsFilter && directorsFilter.length > 0) {
+                films = films.filter(film =>
+                    film.dataValues.directors
+                        .filter(director => directorsFilter.includes(director.name))
+                        .length
+                );
+            }
+            
 
             return films;
         } catch (err) {
@@ -184,7 +242,7 @@ export class FilmsService {
     private async getBestFilmsSet(lang: string) {
         return await this.filmsRepository.findAll({
             limit: 30,
-            order: [ ['filmGrade', 'DESC'] ],
+            order: [['filmGrade', 'DESC']],
             attributes: ['id', 'filmPoster', 'filmGrade', 'filmYear', 'filmTime', 'filmAge'],
             include: [
                 {
@@ -210,7 +268,7 @@ export class FilmsService {
     private async getBestFantasyFilmsSet(lang: string) {
         return await this.filmsRepository.findAll({
             limit: 30,
-            order: [ ['filmGrade', 'DESC'] ],
+            order: [['filmGrade', 'DESC']],
             attributes: ['id', 'filmPoster', 'filmGrade', 'filmYear', 'filmTime', 'filmAge'],
             include: [
                 {
@@ -262,9 +320,9 @@ export class FilmsService {
     private async getSimilarFilms(film: Film, lang: string) {
         return await this.filmsRepository.findAll({
             limit: 28,
-            order: [ ['filmGrade', 'DESC'] ],
+            order: [['filmGrade', 'DESC']],
             attributes: ['id', 'filmPoster', 'filmGrade', 'filmYear', 'filmTime', 'filmAge'],
-            where: { 
+            where: {
                 id: { [Op.ne]: film.id },
             },
             include: [
@@ -364,15 +422,15 @@ export class FilmsService {
         return film;
     }
 
-    async updateFilmsName(filmId: number, lang: string, newFilmsName: string) {
+    async updateFilmName(filmId: number, lang: string, newFilmName: string) {
         const film = await this.filmlangRepository.findOne({
-            where: { filmId, lang},
+            where: { filmId, lang },
             include: { all: true }
         });
         if (!film) {
             throw new NotFoundException(`Film with id ${filmId} not found`);
         }
-        film.filmName = newFilmsName;
+        film.filmName = newFilmName;
         await film.save();
 
         return film;

@@ -13,8 +13,8 @@ export class CountryController {
 
     @ApiOperation({summary: "Создание страны"})
     @ApiResponse({status: 200, type: Country})
-    // @Roles("ADMIN")
-    // @UseGuards(RolesGuard)
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreateCountryDto) {
         return this.countryService.createCountry(dto); 

@@ -44,7 +44,7 @@ services:
     env_file:
       - apps/films/.env
     ports:
-      - 5002:5000
+      - 5003:5000
     command: npm run start:dev films
     depends_on:
       - film-db
@@ -61,7 +61,7 @@ services:
     env_file:
       - apps/persons/.env
     ports:
-      - 5003:5000
+      - 5002:5000
     command: npm run start:dev persons
     depends_on:
       - person-db
@@ -74,50 +74,50 @@ services:
     container_name: auth-db
     image: postgres:12
     env_file:
-      - auth-db/.auth.env
+      - data/auth/.env
     environment:
       PG_DATA: /var/lib/postgresql/data
     ports:
       - 5434:5432
     volumes:
       - authdb:/var/lib/postgresql/data
-      - ./auth-db:/var/lib/postgresql/pgdata
+      - ./data/auth:/var/lib/postgresql/pgdata
   profile-db:
     container_name: profile-db
     image: postgres:12
     env_file:
-      - profile-db/.profile.env
+      - data/profiles/.env
     environment:
       PG_DATA: /var/lib/postgresql/data
     ports:
       - 5433:5432
     volumes:
       - profiledb:/var/lib/postgresql/data
-      - ./profile-db:/var/lib/postgresql/pgdata
+      - ./data/profiles:/var/lib/postgresql/pgdata
   film-db:
     container_name: film-db
     image: postgres:12
     env_file:
-      - film-db/.film.env
+      - data/films/.env
     environment:
       PG_DATA: /var/lib/postgresql/data
     ports:
       - 5435:5432
     volumes:
       - filmdb:/var/lib/postgresql/data
-      - ./film-db:/var/lib/postgresql/pgdata
+      - ./data/films:/var/lib/postgresql/pgdata
   person-db:
     container_name: person-db
     image: postgres:12
     env_file:
-      - person-db/.person.env
+      - data/persons/.env
     environment:
       PG_DATA: /var/lib/postgresql/data
     ports:
       - 5436:5432
     volumes:
       - persondb:/var/lib/postgresql/data
-      - ./person-db:/var/lib/postgresql/pgdata
+      - ./data/persons:/var/lib/postgresql/pgdata
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
