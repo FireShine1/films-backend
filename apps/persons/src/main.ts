@@ -15,7 +15,7 @@ async function start() {
         .build()
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/api/persons/docs', app, document)
-    
+
     const authService = app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
         options: {

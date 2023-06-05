@@ -68,7 +68,7 @@ export class FilmsController {
     @ApiResponse({ status: 200, type: Film })
     @Get('movies')
     getStartData(@Query('lang') lang: string) {
-
+        return this.filmsService.getStartData(lang);
     }
 
     //Скорее всего, основным методом для поиска фильмов будет что-то типа этого

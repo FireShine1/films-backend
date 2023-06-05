@@ -28,9 +28,9 @@ export class ReviewsController {
     }
 
     @MessagePattern('reviews-request')
-    getFilmsByPerson(request) {
-        const filmsId = request.filmsId;
-        return this.reviewsService.getReviewsByFilm(filmsId);
+    getReviewsByFilm(request) {
+        const filmId = request.filmId;
+        return this.reviewsService.getReviewsByFilm(filmId);
     }
 
 }

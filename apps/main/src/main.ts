@@ -16,11 +16,6 @@ async function start() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/api/films/docs', app, document)
 
-    app.use(cookieParser())
-    app.enableCors({
-        credentials: true,
-        origin: process.env.FRONTEND_URL
-    })
     await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
 }
 

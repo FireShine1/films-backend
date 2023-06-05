@@ -10,6 +10,9 @@ export class FilmsActors extends Model<FilmsActors> {
     @Column({type: DataType.INTEGER, primaryKey: true})
     actorId: number;
 
+    @BelongsTo(() => Person)
+    person: Person;
+
     @ApiProperty({example: '1', description: 'Уникальный индентификатор, id фильма'})
     @Column({type: DataType.INTEGER, primaryKey: true})
     filmId: number;
