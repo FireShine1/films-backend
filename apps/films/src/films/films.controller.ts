@@ -12,8 +12,8 @@ export class FilmsController {
 
     constructor(private filmsService: FilmsService) { }
 
-    @ApiOperation({ summary: "Создание фильма" })
-    @ApiResponse({ status: 200, type: Film })
+    //@ApiOperation({ summary: "Создание фильма" })
+    //@ApiResponse({ status: 200, type: Film })
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Post('films')
@@ -21,23 +21,23 @@ export class FilmsController {
         return await this.filmsService.createFilms(dto);
     }
 
-    @ApiOperation({ summary: "Получение всех фильмов" })
-    @ApiResponse({ status: 200, type: [Film] })
+    //@ApiOperation({ summary: "Получение всех фильмов" })
+    //@ApiResponse({ status: 200, type: [Film] })
     @Get('films')
     async getAll() {
         return await this.filmsService.getAll();
     }
 
-    @ApiOperation({ summary: "Получение фильма по названию" })
-    @ApiResponse({ status: 200, type: Film })
+    //@ApiOperation({ summary: "Получение фильма по названию" })
+    //@ApiResponse({ status: 200, type: Film })
     @Get('films/filmName/:filmName')
     async getFilmsByName(@Param('filmName') filmName: string) {
         const film = await this.filmsService.getFilmsByName(filmName)
         return film;
     }
 
-    @ApiOperation({ summary: "Получение фильма по типу фильма" })
-    @ApiResponse({ status: 200, type: Film })
+    //@ApiOperation({ summary: "Получение фильма по типу фильма" })
+    //@ApiResponse({ status: 200, type: Film })
     @Get('films/filmType/:filmType')
     async getFilmsByType(@Param('filmType') filmType: string) {
         const film = await this.filmsService.getFilmsByType(filmType)
@@ -96,8 +96,8 @@ export class FilmsController {
         return this.filmsService.getFilmsByPerson(filmsId, lang);
     }
 
-    @ApiOperation({ summary: "Получение фильма по году создания" })
-    @ApiResponse({ status: 200, type: Film })
+    //@ApiOperation({ summary: "Получение фильма по году создания" })
+    //@ApiResponse({ status: 200, type: Film })
     @Get('/year/:year')
     async getFilmsByDate(@Param('year') filmYear: number) {
         const film = await this.filmsService.getFilmsByYear(filmYear);

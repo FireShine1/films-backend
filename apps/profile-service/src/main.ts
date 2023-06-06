@@ -17,11 +17,11 @@ async function start() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/api/profile-service/docs', app, document)
 
-    app.use(cookieParser())
+    app.use(cookieParser());
     app.enableCors({
         credentials: true,
         origin: process.env.FRONTEND_URL
-    })
+    });
 
     const reviewsService = app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,

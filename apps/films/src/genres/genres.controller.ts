@@ -11,8 +11,8 @@ import { Roles, RolesGuard } from '@app/common';
 export class GenresController {
     constructor(private genresService: GenresService) {}
 
-    @ApiOperation({summary: "Создание жанра"})
-    @ApiResponse({status: 200, type: Genre})
+    //@ApiOperation({summary: "Создание жанра"})
+    //@ApiResponse({status: 200, type: Genre})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Post()
@@ -20,8 +20,8 @@ export class GenresController {
         return await this.genresService.createGenres(dto); 
     }
     
-    @ApiOperation({summary: "Получение всех жанров"})
-    @ApiResponse({status: 200, type: Genre})
+    //@ApiOperation({summary: "Получение всех жанров"})
+    //@ApiResponse({status: 200, type: Genre})
     @Get('/genres')
     async getAll() {
         return await this.genresService.getAll();

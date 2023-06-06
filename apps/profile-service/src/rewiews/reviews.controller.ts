@@ -20,8 +20,8 @@ export class ReviewsController {
         return this.reviewsService.createReview(dto, filmId);
     }
     
-    @ApiOperation({summary: "Получение всех комментариев"})
-    @ApiResponse({status: 200, type: Review})
+    //@ApiOperation({summary: "Получение всех комментариев"})
+    //@ApiResponse({status: 200, type: Review})
     @Get()
     getAll() {
         return this.reviewsService.getAll();

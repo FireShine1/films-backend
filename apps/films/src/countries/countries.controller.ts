@@ -11,8 +11,8 @@ import { Roles, RolesGuard } from '@app/common';
 export class CountryController {
     constructor(private countryService: CountryService) {}
 
-    @ApiOperation({summary: "Создание страны"})
-    @ApiResponse({status: 200, type: Country})
+    //@ApiOperation({summary: "Создание страны"})
+    //@ApiResponse({status: 200, type: Country})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Post()
@@ -20,8 +20,8 @@ export class CountryController {
         return this.countryService.createCountry(dto); 
     }
     
-    @ApiOperation({summary: "Получение всех стран"})
-    @ApiResponse({status: 200, type: [Country]})
+    //@ApiOperation({summary: "Получение всех стран"})
+    //@ApiResponse({status: 200, type: [Country]})
     @Get()
     getAll() {
         return this.countryService.getAll();

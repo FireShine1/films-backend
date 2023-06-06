@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as cookieParser from "cookie-parser";
 
 async function start() {
     const PORT = process.env.PORT || 5000;
@@ -13,7 +14,13 @@ async function start() {
         .addTag('Films')
         .build()
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/api/films/docs', app, document)
+    SwaggerModule.setup('/api/films/docs', app, document);
+
+    app.use(cookieParser());
+    app.enableCors({
+        credentials: true,
+        origin: process.env.FRONTEND_URL
+    });
 
     const filmService = app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
