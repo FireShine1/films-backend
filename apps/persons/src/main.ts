@@ -16,18 +16,18 @@ async function start() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/api/persons/docs', app, document)
     
-    const authService = app.connectMicroservice<MicroserviceOptions>({
-        transport: Transport.RMQ,
-        options: {
-            urls: ['amqp://rabbitmq:5672'],
-            queue: 'films-queue',
-            queueOptions: {
-                durable: false
-            }
-        }
-    })
+    // const authService = app.connectMicroservice<MicroserviceOptions>({
+    //     transport: Transport.RMQ,
+    //     options: {
+    //         urls: ['amqp://rabbitmq:5672'],
+    //         queue: 'films-queue',
+    //         queueOptions: {
+    //             durable: false
+    //         }
+    //     }
+    // })
 
-    await app.startAllMicroservices();
+    // await app.startAllMicroservices();
     await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
 }
 

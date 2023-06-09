@@ -49,7 +49,6 @@ import { SharedModule } from '@app/common';
         }]),
         GenresModule,
         CountriesModule,
-        SharedModule,
     ],
     exports: [FilmsService]
 })

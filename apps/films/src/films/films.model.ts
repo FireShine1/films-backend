@@ -7,21 +7,16 @@ import { CountriesFilms } from "../countries/countries-films.model";
 import { FilmLang } from "./films-lang.model";
 
 // interface FilmsCreationAttrs {
-//     films_link: string;
-//     films_name: string;
-//     films_trailer: string;
-//     films_date: string;
-//     films_list_country: string;
-//     films_list_genre: string;
-//     films_list_director: string;
-//     films_grade: string;
-//     films_total_grade: string;
-//     films_age: string;
-//     films_r: string;
-//     films_time: string;
-//     films_list_actor: string;
-//     films_picture: string;
 //     filmType: string;
+//     filmLink: string;
+//     filmTrailer: string;
+//     filmYear: number;
+//     filmTime: number;
+//     filmGrade: number;
+//     filmTotalGrade: number;
+//     filmR: string;
+//     filmAge: string;
+//     filmPoster: string;
 // }
 
 @Table( {tableName: 'films', underscored: true, timestamps: false })

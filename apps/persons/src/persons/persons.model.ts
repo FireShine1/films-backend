@@ -5,16 +5,14 @@ import { DirectorsFilms } from "./directors-films.model";
 import { FilmsActors } from "./films-actors.model";
 
 
-interface PersonsCreationAttrs {
-    persons_link: string;
-    persons_name: string;
-    persons_picture: string;
-    persons_list_careera: string;
-    persons_grow: string;
-    persons_date_birth: string;
-    persons_place_birth: string;
-    persons_list_films: string;
-};
+// interface PersonsCreationAttrs {
+//     personLink: string;
+//     personPicture: string;
+//     personGender: string;
+//     height: number;
+//     age: number;
+//     birthDate: string;
+// };
 
 @Table({tableName: 'persons', timestamps: false, underscored: true})
 export class Person extends Model<Person> {

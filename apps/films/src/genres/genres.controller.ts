@@ -3,7 +3,6 @@ import { CreateGenresDto } from './dto/create-genres.dto';
 import { GenresService } from './genres.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Genre } from './genres.model';
-import { AuthorOrAdminGuard } from 'apps/profile-service/src/profiles/guard/author-or-admin.guard';
 import { Roles, RolesGuard } from '@app/common';
 
 @ApiTags('genres')
@@ -15,7 +14,7 @@ export class GenresController {
     @ApiResponse({status: 200, type: Genre})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
-    @Post()
+    @Post('/genres')
     async create(@Body() dto: CreateGenresDto) {
         return await this.genresService.createGenres(dto); 
     }
@@ -50,7 +49,7 @@ export class GenresController {
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Delete('admin/genres/:id')
-    async deleteFilm(@Param('id') id: number) {
+    async deleteGenre(@Param('id') id: number) {
        return await this.genresService.deleteGenre(id);
     }
     

@@ -7,15 +7,15 @@ import { Person } from "./persons.model";
 import { AuthorOrAdminGuard } from "apps/profile-service/src/profiles/guard/author-or-admin.guard";
 import { Roles, RolesGuard } from "@app/common";
 
-@ApiTags('countries')
+@ApiTags('persons')
 @Controller('persons')
 export class PersonsController {
     constructor(private personsService: PersonsService) {}
 
     @ApiOperation({summary: "Создание человека"})
     @ApiResponse({status: 200, type: Person})
-    @Roles("ADMIN")
-    @UseGuards(RolesGuard)
+    // @Roles("ADMIN")
+    // @UseGuards(RolesGuard)
     @Post()
     create(@Body() dto: CreatePersonsDto) {
         return this.personsService.createPerson(dto); 

@@ -4,7 +4,9 @@ import { CreateFilmsDto } from "./dto/create-films.dto";
 import { MessagePattern } from "@nestjs/microservices";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Film } from "./films.model";
-import { Roles, RolesGuard } from "@app/common";
+import { RolesGuard } from "@app/common/guards/roles.guard";
+import { Roles } from "@app/common/guards/roles-auth.decorator";
+
 
 @ApiTags('films')
 @Controller()
@@ -49,7 +51,7 @@ export class FilmsController {
     @Get('film/:id')
     async getFilmById(@Param('id') id: number,
         @Query('lang') lang: string) {
-        //const lang = '??'   //Пока хз, как мы будем его получать
+        //const lang = '??'   //Пока не знаю, как мы будем его получать
         const film = await this.filmsService.getFilmById(id, lang);
         return film;
 
@@ -98,6 +100,7 @@ export class FilmsController {
 
     @ApiOperation({ summary: "Получение фильма по году создания" })
     @ApiResponse({ status: 200, type: Film })
+    //тут бы я дабавил films в строку запроса
     @Get('/year/:year')
     async getFilmsByDate(@Param('year') filmYear: number) {
         const film = await this.filmsService.getFilmsByYear(filmYear);
