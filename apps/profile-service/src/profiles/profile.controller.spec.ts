@@ -7,10 +7,13 @@ import { ProfileDto } from './dto/profile.dto';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { Profile } from './profiles.model';
 import { ProfilesModule } from './profiles.module';
+import { UserDto } from '@app/common';
 
 describe('ProfileController', () => {
-  let profileController: ProfilesController;
-
+  let controller: ProfilesController;
+  let service: ProfilesService;
+  let profileDto: ProfileDto;
+  let userDto: UserDto;
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [ProfilesController],
@@ -25,18 +28,6 @@ describe('ProfileController', () => {
           },
         ],
         imports: [ProfilesModule, ProfileDto,
-          ClientsModule.register([{
-            name: 'auth_service',
-            transport: Transport.RMQ,
-            options: {
-                urls: ['amqp://rabbitmq:5672'],
-                queue: 'auth-queue',
-                queueOptions: {
-                    durable: false
-                }
-            }
-        }]),
-          
           SequelizeModule.forRoot({
             dialect: 'postgres',
             host: "localhost",
@@ -50,12 +41,28 @@ describe('ProfileController', () => {
         ],
     }).compile();
 
-    profileController = app.get<ProfilesController>(ProfilesController);
+    controller = app.get<ProfilesController>(ProfilesController);
+    service = app.get<ProfilesService>(ProfilesService);
+    profileDto = app.get<ProfileDto>(ProfileDto);
+    userDto = app.get<UserDto>(UserDto);
   });
 
-  /*describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(profileController.getHello()).toBe('Hello World!');
+  describe('root', () => {
+    it('createProfile', async () => {
+      const dto: typeof userDto = { 
+        email: "test",
+        password: "test"
+      };
+      const person = await controller.login(dto, 'res');
+      expect(person).toMatchObject({
+        "id": 5671,
+        "email": "test",
+        "password": "test"
+      });
     });
-  });*/
+    it('getAllprofile', async () => {
+      const profile = await controller.getAll();
+      expect(profile).toHaveLength(0);
+    });
+  });
 });

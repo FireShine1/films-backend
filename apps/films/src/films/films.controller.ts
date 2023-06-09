@@ -98,14 +98,8 @@ export class FilmsController {
         return this.filmsService.getFilmsByPerson(filmsId, lang);
     }
 
-<<<<<<< HEAD
-    @ApiOperation({ summary: "Получение фильма по году создания" })
-    @ApiResponse({ status: 200, type: Film })
-    //тут бы я дабавил films в строку запроса
-=======
     //@ApiOperation({ summary: "Получение фильма по году создания" })
     //@ApiResponse({ status: 200, type: Film })
->>>>>>> 0b760ad6cf57fe576010cd99c22c7f401e8f7824
     @Get('/year/:year')
     async getFilmsByDate(@Param('year') filmYear: number) {
         const film = await this.filmsService.getFilmsByYear(filmYear);

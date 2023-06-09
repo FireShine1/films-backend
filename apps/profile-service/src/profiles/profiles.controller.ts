@@ -47,9 +47,7 @@ export class ProfilesController {
     @Get('/refresh')
     async refresh(@Request() req, @Response({ passthrough: true }) res) {
         const { refreshToken } = req.cookies;
-
         const userData = await this.profilesService.refresh(refreshToken);
-
         res.cookie('refreshToken', userData.tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
         return userData;
     }

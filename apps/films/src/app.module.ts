@@ -22,11 +22,11 @@ import { CountriesModule } from "./countries/countries.module";
         SequelizeModule.forRoot({
             //dialectModule: require('pg'),
             dialect: 'postgres',
-            host: "localhost",
-            port: 5432,
-            username:"postgres",
-            password: "12345678",
-            database: "films_v2",
+            host: process.env.POSTGRES_HOST,
+            port: Number(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: String(process.env.POSTGRES_PASSWORD),
+            database: process.env.POSTGRES_DB,
             models: [Film, Genre, GenresFilms, Country, CountriesFilms, FilmLang],
             autoLoadModels: true
         }),

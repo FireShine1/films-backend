@@ -68,19 +68,30 @@ describe('PersonsController', () => {
     service = module.get<PersonsService>(PersonsService);
   });
   describe( 'Persons', () => {
-    // it('createPersons', async () => {
-    //   const dto: typeof personsDto = { 
-        
-    //         };
-    //   const persons = await controller.create(dto);
-    //   expect(persons).toMatchObject({
-    //     "id": 6,
-        
-    // });
+    it('createPersons', async () => {
+      const dto: typeof personsDto = { 
+        personLink: "test",
+        personPicture: "test",
+        personGender: "test",
+        height: 180,
+        age: 59,
+        birthDate: "test"
+            };
+      const person = await controller.create(dto);
+      expect(person).toMatchObject({
+        "id": 5671,
+        "personLink": "test",
+        "personPicture": "test",
+        "personGender": "test",
+        "height": 180,
+        "age": 59,
+        "birthDate": "test"
+    });
     });
     it('getAllPersons', async () => {
       const persons = await controller.getAll();
       expect(persons).toHaveLength(5170);
     });
+  });
 });
 
