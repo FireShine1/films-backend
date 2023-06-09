@@ -186,7 +186,6 @@ export class PersonsService {
         });
 
         let result = [];
-        console.log(personsIds[0]);
         persons.forEach(person => personsIds.forEach(item => {
             if (person.id == item.id) {
                 result.push({person, filmsNumber: item.dataValues['filmsNumber']})

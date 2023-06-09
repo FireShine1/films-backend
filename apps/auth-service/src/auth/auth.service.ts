@@ -89,7 +89,7 @@ export class AuthService {
     }
 
     private async getUserByEmail(email: string) {
-        const user = await this.userRepository.findOne({ where: { email }, include: { all: true } });
+        const user = await this.userRepository.findOne({ where: { email } });
         return user;
     }
 
