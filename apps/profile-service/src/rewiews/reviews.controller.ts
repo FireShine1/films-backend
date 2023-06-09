@@ -20,17 +20,17 @@ export class ReviewsController {
         return this.reviewsService.createReview(dto, filmId);
     }
     
-    @ApiOperation({summary: "Получение всех комментариев"})
-    @ApiResponse({status: 200, type: Review})
+    //@ApiOperation({summary: "Получение всех комментариев"})
+    //@ApiResponse({status: 200, type: Review})
     @Get()
     getAll() {
         return this.reviewsService.getAll();
     }
 
     @MessagePattern('reviews-request')
-    getFilmsByPerson(request) {
-        const filmsId = request.filmsId;
-        return this.reviewsService.getReviewsByFilm(filmsId);
+    getReviewsByFilm(request) {
+        const filmId = request.filmId;
+        return this.reviewsService.getReviewsByFilm(filmId);
     }
 
 }

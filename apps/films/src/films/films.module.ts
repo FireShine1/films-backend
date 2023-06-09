@@ -25,28 +25,41 @@ import { SharedModule } from '@app/common';
             CountriesFilms,
             FilmLang
         ]),
-        ClientsModule.register([{
-            name: 'films_service',
-            transport: Transport.RMQ,
-            options: {
-                urls: [`amqp://localhost:5672`],
-                queue: 'films_queue',
-                queueOptions: {
-                    durable: false,
+        ClientsModule.register([
+            {
+                name: 'films_service',
+                transport: Transport.RMQ,
+                options: {
+                    urls: [`amqp://rabbitmq:5672`],
+                    queue: 'films-queue',
+                    queueOptions: {
+                        durable: false,
+                    },
                 },
             },
-        }]),
-        ClientsModule.register([{
+            {
+                name: 'reviews_service',
+                transport: Transport.RMQ,
+                options: {
+                    urls: [`amqp://rabbitmq:5672`],
+                    queue: 'reviews-queue',
+                    queueOptions: {
+                        durable: false,
+                    },
+                },
+            }
+        ]),
+        /*ClientsModule.register([{
             name: 'reviews_service',
             transport: Transport.RMQ,
             options: {
-                urls: [`amqp://localhost:5672`],
+                urls: [`amqp://rabbitmq:5672`],
                 queue: 'review_queue',
                 queueOptions: {
                     durable: false,
                 },
             },
-        }]),
+        }]),*/
         GenresModule,
         CountriesModule,
     ],

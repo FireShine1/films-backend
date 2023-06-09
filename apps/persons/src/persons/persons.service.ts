@@ -11,12 +11,11 @@ import { Op, Sequelize } from 'sequelize';
 
 @Injectable()
 export class PersonsService {
-    actorsFilmsRepository: any;
-    directorsFilmsRepository: any;
-
     constructor(
         @InjectModel(Person) private personsRepository: typeof Person,
         @InjectModel(PersonLang) private personlangRepository: typeof PersonLang,
+        @InjectModel(DirectorsFilms) private directorsFilmsRepository: typeof DirectorsFilms,
+        @InjectModel(FilmsActors) private actorsFilmsRepository: typeof FilmsActors,
         @Inject('persons_service') private client: ClientProxy,
         ) { }
 
@@ -93,7 +92,7 @@ export class PersonsService {
     }
 
     private async getAllActors() {
-        return await this.personsRepository.findAll({
+        const actorsIds = await this.personsRepository.findAll({
             attributes: ['id'],
             include: [
                 {
@@ -101,17 +100,29 @@ export class PersonsService {
                     attributes: [],
                     required: true,
                 },
-                {
-                    model: PersonLang,
-                    attributes: ['personName'],
-                }
             ],
             group: ['Person.id'],
+        });
+        const ids = actorsIds.map(item => item.id);
+
+        return await this.personsRepository.findAll({
+            attributes: ['id'],
+            where: {
+                id: {
+                    [Op.in]: [...ids]
+                }
+            },
+            include: [
+                {
+                    model: PersonLang,
+                    attributes: ['lang','personName'],
+                }
+            ]
         });
     }
 
     private async getAllDirectors() {
-        return await this.personsRepository.findAll({
+        const directorsIds = await this.personsRepository.findAll({
             attributes: ['id'],
             include: [
                 {
@@ -119,36 +130,69 @@ export class PersonsService {
                     attributes: [],
                     required: true,
                 },
-                {
-                    model: PersonLang,
-                    attributes: ['personName'],
-                }
             ],
             group: ['Person.id'],
+        });
+        const ids = directorsIds.map(item => item.id);
+
+        return await this.personsRepository.findAll({
+            attributes: ['id'],
+            where: {
+                id: {
+                    [Op.in]: [...ids]
+                }
+            },
+            include: [
+                {
+                    model: PersonLang,
+                    attributes: ['lang', 'personName'],
+                }
+            ]
         });
     }
 
     private async getPopularActors() {
-        return await this.personsRepository.findAll({
-            limit: 30,
+        const personsIds = await this.personsRepository.findAll({
+            subQuery: false,
             attributes: [
-                'id', 'personPicture',
-                [Sequelize.fn("COUNT", Sequelize.col("FilmsActors.filmId")), "filmsNumber"]
+                'id',
+                [Sequelize.fn("COUNT", Sequelize.col("actorFilms.film_id")), "filmsNumber"]
             ],
             include: [
                 {
                     model: FilmsActors,
                     attributes: [],
-                    required: true,
                 },
-                {
-                    model: PersonLang,
-                    attributes: ['personName'],
-                }
             ],
             group: ['Person.id'],
             order: [['filmsNumber', 'DESC']],
+            limit: 30,
         });
+        const ids = personsIds.map(item => item.id);
+
+        const persons = await this.personsRepository.findAll({
+            attributes: ['id', 'personPicture'],
+            where: {
+                id: {
+                    [Op.in]: [...ids]
+                }
+            },
+            include: [
+                {
+                    model: PersonLang,
+                    attributes: ['lang', 'personName'],
+                }
+            ]
+        });
+
+        let result = [];
+        persons.forEach(person => personsIds.forEach(item => {
+            if (person.id == item.id) {
+                result.push({person, filmsNumber: item.dataValues['filmsNumber']})
+            }
+        }));
+
+        return result.sort((item1, item2) => (item2.filmsNumber - item1.filmsNumber));
     }
     
     private async getActors(filmsId, poster, lang) {

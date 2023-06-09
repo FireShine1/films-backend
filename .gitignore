@@ -1,4 +1,6 @@
 *.env
+*.pem
+/data
 # compiled output
 /dist
 /node_modules

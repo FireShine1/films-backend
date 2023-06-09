@@ -12,24 +12,31 @@ import { Roles, RolesGuard } from "@app/common";
 export class PersonsController {
     constructor(private personsService: PersonsService) {}
 
+<<<<<<< HEAD
     @ApiOperation({summary: "Создание человека"})
     @ApiResponse({status: 200, type: Person})
     // @Roles("ADMIN")
     // @UseGuards(RolesGuard)
+=======
+    //@ApiOperation({summary: "Создание человека"})
+    //@ApiResponse({status: 200, type: Person})
+    @Roles("ADMIN")
+    @UseGuards(RolesGuard)
+>>>>>>> 0b760ad6cf57fe576010cd99c22c7f401e8f7824
     @Post()
     create(@Body() dto: CreatePersonsDto) {
         return this.personsService.createPerson(dto); 
     }
     
-    @ApiOperation({summary: "Получения всех людей"})
-    @ApiResponse({status: 200, type: Person})
+    //@ApiOperation({summary: "Получения всех людей"})
+    //@ApiResponse({status: 200, type: Person})
     @Get()
     getAll() {
         return this.personsService.getAll();
     }
 
-    @ApiOperation({summary: "Получение человека по именя"})
-    @ApiResponse({status: 200, type: Person})
+    //@ApiOperation({summary: "Получение человека по имени"})
+    //@ApiResponse({status: 200, type: Person})
     @Get('/personName/:personName')
     async getPersonsByName(@Param('personName') personName: string) {
         const film = await this.personsService.getPersonByName(personName)

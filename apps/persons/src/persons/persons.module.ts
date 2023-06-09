@@ -23,8 +23,8 @@ import { SharedModule } from '@app/common';
             name: 'persons_service',
             transport: Transport.RMQ,
             options: {
-                urls: [`amqp://localhost:5672`],
-                queue: 'persons_queue',
+                urls: [`amqp://rabbitmq:5672`],
+                queue: 'persons-queue',
                 queueOptions: {
                     durable: false,
                 },

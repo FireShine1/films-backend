@@ -372,7 +372,7 @@ export class FilmsService {
                     where: countryClause,
                 }
             ],
-            group: ['FilmMain.id'],
+            group: ['Film.id'],
         });
 
         return filmsId.map(item => item.id);
