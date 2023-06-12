@@ -49,19 +49,9 @@ import { SharedModule } from '@app/common';
                 },
             }
         ]),
-        /*ClientsModule.register([{
-            name: 'reviews_service',
-            transport: Transport.RMQ,
-            options: {
-                urls: [`amqp://rabbitmq:5672`],
-                queue: 'review_queue',
-                queueOptions: {
-                    durable: false,
-                },
-            },
-        }]),*/
         GenresModule,
         CountriesModule,
+        SharedModule,
     ],
     exports: [FilmsService]
 })

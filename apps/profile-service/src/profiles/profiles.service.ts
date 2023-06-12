@@ -21,7 +21,9 @@ export class ProfilesService {
 
         const {tokens, user} = data;
 
-        return {tokens, user};
+        const profile = this.profileRepository.findOne( { where: { userId: user.id } } )
+
+        return {tokens, user, profile};
     }
 
     async register(registerDto: RegisterDto) {

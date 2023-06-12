@@ -18,11 +18,11 @@ import { DirectorsFilms } from "./persons/directors-films.model";
         SequelizeModule.forRoot({
             //dialectModule: require('pg'),
             dialect: 'postgres',
-            host: "localhost",
-            port: 5432,
-            username:"postgres",
-            password: "12345678",
-            database: "persons_v2",
+            host: process.env.POSTGRES_HOST,
+            port: Number(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: String(process.env.POSTGRES_PASSWORD),
+            database: process.env.POSTGRES_DB,
             models: [
                 Person,
                 PersonLang,

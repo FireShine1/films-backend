@@ -16,7 +16,7 @@ export class ReviewsController {
     @Roles("USER")
     @UseGuards(RolesGuard)
     @Post('film/:id/comment')
-    create(@Body() dto: CreateReviewDto, @Param('filmId') filmId: number) {
+    create(@Body() dto: CreateReviewDto, @Param('id') filmId: number) {
         return this.reviewsService.createReview(dto, filmId);
     }
     

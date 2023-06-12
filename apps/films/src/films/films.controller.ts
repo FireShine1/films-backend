@@ -51,18 +51,16 @@ export class FilmsController {
     @Get('film/:id')
     async getFilmById(@Param('id') id: number,
         @Query('lang') lang: string) {
-        //const lang = '??'   //Пока не знаю, как мы будем его получать
         const film = await this.filmsService.getFilmById(id, lang);
         return film;
 
     }
 
-    //Для главной страницы и для страницы поиска без фильтров
+    //Для главной страницы
     @ApiOperation({ summary: "Получение подборок фильмов для главной страницы" })
     @ApiResponse({ status: 200, type: Film })
     @Get('home')
     getFilmsSets(@Query('lang') lang: string) {
-        //const lang = '??'   //Опять язык, который пока хз, как мы будем получать
         return this.filmsService.getFilmsSets(lang);
     }
 
@@ -100,7 +98,7 @@ export class FilmsController {
 
     //@ApiOperation({ summary: "Получение фильма по году создания" })
     //@ApiResponse({ status: 200, type: Film })
-    @Get('/year/:year')
+    @Get('films/year/:year')
     async getFilmsByDate(@Param('year') filmYear: number) {
         const film = await this.filmsService.getFilmsByYear(filmYear);
         return film;

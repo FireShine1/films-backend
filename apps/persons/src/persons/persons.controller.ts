@@ -4,7 +4,6 @@ import { CreatePersonsDto } from "./dto/create-persons.dto";
 import { MessagePattern } from "@nestjs/microservices";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Person } from "./persons.model";
-import { AuthorOrAdminGuard } from "apps/profile-service/src/profiles/guard/author-or-admin.guard";
 import { Roles, RolesGuard } from "@app/common";
 
 @ApiTags('persons')
@@ -12,17 +11,10 @@ import { Roles, RolesGuard } from "@app/common";
 export class PersonsController {
     constructor(private personsService: PersonsService) {}
 
-<<<<<<< HEAD
-    @ApiOperation({summary: "Создание человека"})
-    @ApiResponse({status: 200, type: Person})
-    // @Roles("ADMIN")
-    // @UseGuards(RolesGuard)
-=======
     //@ApiOperation({summary: "Создание человека"})
     //@ApiResponse({status: 200, type: Person})
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
->>>>>>> 0b760ad6cf57fe576010cd99c22c7f401e8f7824
     @Post()
     create(@Body() dto: CreatePersonsDto) {
         return this.personsService.createPerson(dto); 
