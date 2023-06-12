@@ -118,7 +118,7 @@ export class FilmsService {
 
         try {
             const { actors, directors } = await firstValueFrom(
-                this.personsClient.send("persons-request", { filmsId: [id], poster: true, lang })
+                this.personsClient.send("persons-request", { filmsId: [id], lang })
             );
 
             film.dataValues.actors = this.mapActorsToFilm(film, actors);
@@ -184,7 +184,7 @@ export class FilmsService {
 
         try {
             const { actors, directors } = await firstValueFrom(
-                this.personsClient.send("persons-request", { filmsId, poster: false, lang })
+                this.personsClient.send("persons-filters-request", { filmsId, lang })
             );
 
             films.forEach(film => {

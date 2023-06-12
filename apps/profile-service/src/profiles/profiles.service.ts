@@ -18,7 +18,6 @@ export class ProfilesService {
         if (data.error) {
             throw new HttpException(data.error.message, data.error.status);
         }
-
         const {tokens, user} = data;
 
         const profile = this.profileRepository.findOne( { where: { userId: user.id } } )
