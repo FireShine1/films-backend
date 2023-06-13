@@ -13,13 +13,10 @@ import { PersonLang } from "./persons-lang.model";
 
 
 describe('PersonsController', () => {
-  let controller: PersonsController;
-  let personsDto: CreatePersonsDto;
   let service: PersonsService;
-
+  let personsDto: CreatePersonsDto;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({ 
-    controllers: [PersonsController],
     providers: [PersonsService,
       {
         provide: getModelToken(Person),
@@ -63,13 +60,58 @@ describe('PersonsController', () => {
     ],
     }).compile();
 
-    personsDto = module.get<CreatePersonsDto>(CreatePersonsDto);
-    controller = module.get<PersonsController>(PersonsController);
     service = module.get<PersonsService>(PersonsService);
+    personsDto = module.get<CreatePersonsDto>(CreatePersonsDto);
   });
-  describe( 'Persons', () => {
-    it('createPersons', async () => {
-      const dto: typeof personsDto = { 
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  it('Get all person', async () => {
+    const person = await service.getAll();
+    expect(person).toHaveLength(5173);
+  });
+
+  it('Get person by Name', async () => {
+    let personName = 'Киану Ривз';
+    const person = await service.getPersonByName(personName);
+    expect(person).toMatchObject({
+        "birthPlace": "Бейрут, Ливан", 
+        "career": "Актер, Продюсер, Режиссер", 
+        "id": 851, 
+        "lang": "ru", 
+        "person": {
+            "age": 57, 
+            "birthDate": 
+            "1964-09-02", 
+            "height": 186, 
+            "id": 7836, 
+            "personGender": "MALE", 
+            "personLink": "https://www.kinopoisk.ru/name/7836/", 
+            "personPicture": "https://kinopoiskapiunofficial.tech/images/actor_posters/kp/7836.jpg"
+        }, 
+        "personId":7836, 
+        "personName": "Киану Ривз"
+    });
+  });
+
+  it('Get person by id', async () => {
+    let personId = 1;
+    let lang = 'ru';
+    const person = await service.getPersonById(personId, lang);
+    expect(person).toMatchObject({
+        "age": 59, 
+        "birthDate": "test", 
+        "films": "Error: Cannot load films", 
+        "height": 180, 
+        "id": 1, 
+        "personGender": "test", 
+        "personLink": "test", 
+        "personPicture": "test"
+    });
+  });
+  it('create person', async () => {
+    const dto: typeof personsDto = { 
         personLink: "test",
         personPicture: "test",
         personGender: "test",
@@ -77,47 +119,29 @@ describe('PersonsController', () => {
         age: 59,
         birthDate: "test"
             };
-      const person = await controller.create(dto);
+      const person = await service.createPerson(dto);
       expect(person).toMatchObject({
-        "id": 5671,
+        "id": 5,
         "personLink": "test",
         "personPicture": "test",
         "personGender": "test",
         "height": 180,
         "age": 59,
         "birthDate": "test"
-    });
-    });
-    it('getAllPersons', async () => {
-      const persons = await controller.getAll();
-      expect(persons).toHaveLength(5170);
-    });
-    it('getByName', async () => {
-      const personName = 'test';
-      const persons = await controller.getPersonsByName(personName);
-      expect(persons).toMatchObject({
-        "id": 1,
-        "personLink": "test",
-        "personPicture": "test",
-        "personGender": "test",
-        "height": 180,
-        "age": 59,
-        "birthDate": "test"
-    });
-    });
-    it('getByIs', async () => {
-      const personId = 1;
-      const persons = await controller.getPersonById;
-      expect(persons).toMatchObject({
-        "id": 1,
-        "personLink": "test",
-        "personPicture": "test",
-        "personGender": "test",
-        "height": 180,
-        "age": 59,
-        "birthDate": "test"
-    });
     });
   });
-});
 
+  it('Get persons', async () => {
+    let poster = ''
+    let personId = 1;
+    let lang = 'ru';
+    const person = await service.getPersons(personId, lang, poster);
+    expect( typeof person).toBe('object');;
+  });
+
+  it('Get persons data', async () => {
+    const person = await service.getPersonsData();
+    expect( typeof person).toBe('object');
+  });
+
+});

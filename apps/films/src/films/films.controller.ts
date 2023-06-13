@@ -14,8 +14,8 @@ export class FilmsController {
 
     constructor(private filmsService: FilmsService) { }
 
-    //@ApiOperation({ summary: "Создание фильма" })
-    //@ApiResponse({ status: 200, type: Film })
+    @ApiOperation({ summary: "Создание фильма" })
+    @ApiResponse({ status: 200, type: Film })
     @Roles("ADMIN")
     @UseGuards(RolesGuard)
     @Post('films')
@@ -23,23 +23,23 @@ export class FilmsController {
         return await this.filmsService.createFilms(dto);
     }
 
-    //@ApiOperation({ summary: "Получение всех фильмов" })
-    //@ApiResponse({ status: 200, type: [Film] })
+    @ApiOperation({ summary: "Получение всех фильмов" })
+    @ApiResponse({ status: 200, type: [Film] })
     @Get('films')
     async getAll() {
         return await this.filmsService.getAll();
     }
 
-    //@ApiOperation({ summary: "Получение фильма по названию" })
-    //@ApiResponse({ status: 200, type: Film })
+    @ApiOperation({ summary: "Получение фильма по названию" })
+    @ApiResponse({ status: 200, type: Film })
     @Get('films/filmName/:filmName')
     async getFilmsByName(@Param('filmName') filmName: string) {
         const film = await this.filmsService.getFilmsByName(filmName)
         return film;
     }
 
-    //@ApiOperation({ summary: "Получение фильма по типу фильма" })
-    //@ApiResponse({ status: 200, type: Film })
+    @ApiOperation({ summary: "Получение фильма по типу фильма" })
+    @ApiResponse({ status: 200, type: Film })
     @Get('films/filmType/:filmType')
     async getFilmsByType(@Param('filmType') filmType: string) {
         const film = await this.filmsService.getFilmsByType(filmType)
@@ -64,6 +64,7 @@ export class FilmsController {
         return this.filmsService.getFilmsSets(lang);
     }
 
+    //Первый заход на страницу поиска
     @ApiOperation({ summary: "Страница поиска без фильтров" })
     @ApiResponse({ status: 200, type: Film })
     @Get('movies')
@@ -71,10 +72,7 @@ export class FilmsController {
         return this.filmsService.getStartData(lang);
     }
 
-    //Скорее всего, основным методом для поиска фильмов будет что-то типа этого
-    //Post или Get - тут хз, надо ребят с фронта спрашивать
-    //Так же как и то, как именно мы filters получаем
-    //Набросал пока для примера
+    //Поиск фильмов по фильтрам
     @ApiOperation({ summary: "Поиск фильмов по фильтрам" })
     @ApiResponse({ status: 200, type: Film })
     @Post('movies')
@@ -87,8 +85,7 @@ export class FilmsController {
         return this.filmsService.getFilmsByFilters(countries, genres, actors, directors, lang);
     }
 
-    //Это чтобы отдавать сервису личностей по запросу конкретной личности фильмы,
-    //в которых эта личность участвовала
+    /* Фильмы, в которых учавствовал человек */
     @MessagePattern('films-request')
     getFilmsByPerson(request) {
         const filmsId = request.filmsId;
@@ -96,8 +93,9 @@ export class FilmsController {
         return this.filmsService.getFilmsByPerson(filmsId, lang);
     }
 
-    //@ApiOperation({ summary: "Получение фильма по году создания" })
-    //@ApiResponse({ status: 200, type: Film })
+    
+    @ApiOperation({ summary: "Получение фильма по году создания" })
+    @ApiResponse({ status: 200, type: Film })
     @Get('films/year/:year')
     async getFilmsByDate(@Param('year') filmYear: number) {
         const film = await this.filmsService.getFilmsByYear(filmYear);

@@ -1,9 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { FilmsModule } from '../src/films/films.module';
-import { CountriesModule } from '../src/countries/countries.module';
-import { GenresModule } from '../src/genres/genres.module';
 import { AppModule } from '../src/app.module';
 import { send } from 'process';
 
@@ -94,7 +91,13 @@ describe('FilmsController (e2e)', () => {
     }]);
   });
   it('films/filmType/:filmType (GET) - Получение фильма по его типу', async () => {
-    const res = await request(app.getHttpServer()).get('films/filmType/:FILM');
+    const filmsnType = 'FILM';
+    const res = await request(app.getHttpServer()).get(`films/filmType/${encodeURIComponent(filmsnType)}`);
+    expect(res.statusCode).toBe(200)
+  });
+  it('films/filmName/:filmName (GET) - Получение фильма по его типу', async () => {
+    const filmsnName = 'Матрица';
+    const res = await request(app.getHttpServer()).get(`films/filmName/${encodeURIComponent(filmsnName)}`);
     expect(res.statusCode).toBe(200)
   });
 });

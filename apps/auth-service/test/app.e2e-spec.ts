@@ -18,7 +18,8 @@ describe('AuthController (e2e)', () => {
   });
   //roles
   it('/roles/:value (GET) - returns list of films', async () => {
-    const res = await request(app.getHttpServer()).get('roles/:USER');
+    const value= 'USER';
+    const res = await request(app.getHttpServer()).get(`roles/:${encodeURIComponent(value)}`);
     expect(res.statusCode).toBe(200)
   });
   it('/roles (POST) - create new films', async () => {

@@ -1,14 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { UserRoles } from "../roles/user-roles.model";
+import { Role } from "../roles/roles.model";
 import { User } from "./auth.model";
 import { SequelizeModule, getModelToken } from "@nestjs/sequelize";
 import { Token } from "../token/token.model";
 import { AuthModule } from "./auth.module";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { UserDto } from "@app/common";
-import { UserRoles } from "../roles/user-roles.model";
-import { Role } from "../roles/roles.model";
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -35,7 +35,7 @@ describe('AuthController', () => {
         useValue: {},
       },
     ],
-    imports:  [AuthModule,
+    imports:  [AuthModule, UserDto,
     ClientsModule.register([{
         name: 'Auth_service',
         transport: Transport.RMQ,
@@ -59,27 +59,31 @@ describe('AuthController', () => {
       }),
     ],
     }).compile();
-    userDto = module.get<UserDto>(UserDto); 
+    userDto = module.get<UserDto>(UserDto);
     controller = module.get<AuthController>(AuthController);
     service = module.get<AuthService>(AuthService);
   });
   describe( 'Auth', () => {
     it('getAllAuth', async () => {
-      const Auth = await controller.getAll('');
-      expect(Auth).toBeDefined();
+      const auth = await service.getAll();
+      expect(auth).toBeDefined();
     });
-    it('createUser', async () => {
-      const dto: typeof userDto = {
-          email: 'test',
-          password: 'test'
-      };
-      const users = await controller.login(dto);
-      expect(users).toMatchObject({
-          "id": "1",
-          "email": 'test',
-          "password": 'test'
+    it('getAllAuth', async () => {
+        const userId = 1
+        const auth = await service.getById(userId);
+        expect(auth).toBeDefined();
       });
-  });
+      it('createUser', async () => {
+        const dto: typeof userDto = {
+            email: 'test',
+            password: 'test'
+        };
+        const users = await service.login(dto);
+        expect(users).toMatchObject({
+            "id": "1",
+            "email": 'test',
+            "password": 'test'
+        });
+    });
+    });   
 });
-});
-

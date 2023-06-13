@@ -66,11 +66,11 @@ describe('FilmsService', () => {
         }]), 
           SequelizeModule.forRoot({
             dialect: 'postgres',
-            host: "localhost",
-            port: 5432,
-            username:"postgres",
-            password: "12345678",
-            database: "films_v2",
+            host: process.env.POSTGRES_HOST,
+            port: Number(process.env.POSTGRES_PORT),
+            username: process.env.POSTGRES_USER,
+            password: String(process.env.POSTGRES_PASSWORD),
+            database: process.env.POSTGRES_DB,
             models: [], 
             autoLoadModels: true,
           }),
@@ -82,5 +82,9 @@ describe('FilmsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+  it('should be defined', async () => {
+    const films = await service.getAll();
+    expect(films).toBeDefined();
   });
 });

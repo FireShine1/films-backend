@@ -11,10 +11,9 @@ import { CreateRoleDto } from "./dto/create-role.dto";
 import { AddRoleDto } from "./dto/add-role.dto";
 
 describe('RolesController', () => {
-    let controller: RolesController;
     let service: RolesService;
-    let roleDto: CreateRoleDto
-    let addDto: AddRoleDto
+    let roleDto: CreateRoleDto;
+    let addDto: AddRoleDto;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [RolesController],
@@ -58,12 +57,12 @@ describe('RolesController', () => {
         }).compile();
         roleDto = module.get<CreateRoleDto>(CreateRoleDto);
         addDto = module.get<AddRoleDto>(AddRoleDto);
-        controller = module.get<RolesController>(RolesController);
         service = module.get<RolesService>(RolesService);
     });
     describe('Roles', () => {
         it('getAllRoles', async () => {
-            const roles = await controller.getByValue('');
+            const value = ''
+            const roles = await service.getRoleByValue(value);
             expect(roles).toBeDefined();
         });
 
@@ -72,7 +71,7 @@ describe('RolesController', () => {
                 value: 'USER',
                 description: 'Пользователь'
             };
-            const roles = await controller.create(dto);
+            const roles = await service.createRole(dto);
             expect(roles).toMatchObject({
                 "id": "1",
                 "value": "USER",
@@ -85,7 +84,7 @@ describe('RolesController', () => {
                 value: 'USER',
                 userId: 1
             };
-            const roles = await controller.addRole(dto);
+            const roles = await service.addRole(dto);
             expect(roles).toMatchObject({
                 "userId": "1",
                 "value": "USER",

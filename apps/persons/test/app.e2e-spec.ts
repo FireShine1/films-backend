@@ -42,4 +42,15 @@ describe('PersonsController (e2e)', () => {
       "birthDate": "test"
     }]);
   });
+  it('[persons/personName/:personName (GET) - get persons by name', async () => {
+    const personName = 'Киану Ривз';
+    const res = await request(app.getHttpServer()).get(`/persons/personName/${encodeURIComponent(personName)}`);
+    expect(res.statusCode).toBe(200)
+  });
+
+  it('[persons/:id (GET) - get persons by d', async () => {
+    const personId = 1;
+    const res = await request(app.getHttpServer()).get(`/persons/${encodeURIComponent(personId)}`);
+    expect(res.statusCode).toBe(200)
+  });
 });
