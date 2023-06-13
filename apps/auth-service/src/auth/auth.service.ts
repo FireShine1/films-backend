@@ -5,6 +5,7 @@ import { User } from "./auth.model";
 import { InjectModel } from '@nestjs/sequelize';
 import { RolesService } from '../roles/roles.service';
 import { TokenService } from '../token/token.service';
+import { Role } from '../roles/roles.model';
 
 @Injectable()
 export class AuthService {
@@ -89,7 +90,15 @@ export class AuthService {
     }
 
     private async getUserByEmail(email: string) {
-        const user = await this.userRepository.findOne({ where: { email } });
+        const user = await this.userRepository.findOne({ 
+            where: { email },
+            include: [
+                {
+                    model: Role,
+                    through: { attributes: [] },
+                }
+            ],
+        });
         return user;
     }
 

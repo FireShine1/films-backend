@@ -5,15 +5,17 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { Role } from "./roles.model";
 import { User } from "../auth/auth.model";
 import { UserRoles } from "./user-roles.model";
+import { SharedModule } from '@app/common';
 
 @Module({
-  providers: [RolesService],
-  controllers: [RolesController],
-  imports: [
-    SequelizeModule.forFeature([Role, User, UserRoles]),
-  ],
-  exports: [
-    RolesService
-  ]
+    providers: [RolesService],
+    controllers: [RolesController],
+    imports: [
+        SequelizeModule.forFeature([Role, User, UserRoles]),
+        SharedModule,
+    ],
+    exports: [
+        RolesService
+    ]
 })
 export class RolesModule { };

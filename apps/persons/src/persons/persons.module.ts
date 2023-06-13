@@ -30,7 +30,8 @@ import { SharedModule } from '@app/common';
                 },
             },
         }]),
-        SharedModule],
+        SharedModule,
+    ],
     exports: [PersonsService]
 })
 export class PersonsModule { }
