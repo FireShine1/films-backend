@@ -20,7 +20,7 @@ export class ProfilesService {
         }
         const {tokens, user} = data;
 
-        const profile = this.profileRepository.findOne( { where: { userId: user.id } } )
+        const profile = await this.profileRepository.findOne( { where: { userId: user.id } } )
 
         return {tokens, user, profile};
     }

@@ -7,12 +7,12 @@ import * as fs from 'fs';
 
 async function start() {
     const PORT = process.env.PORT || 5000;
-    /*const httpsOptions = {
+    const httpsOptions = {
         key: fs.readFileSync('key.pem'),
         cert: fs.readFileSync('cert.pem'),
-    };*/
+    };
 
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { httpsOptions });
     const config = new DocumentBuilder()
         .setTitle('Кинограм')
         .setDescription('Микросервис фильмы')
